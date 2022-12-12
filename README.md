@@ -1,10 +1,14 @@
 # Budget Python Wordle
 
-A brief description of the project, what it does, and why it's useful.
+Inspired by the popular game recently bought by NYT, Wordle
 
 ## Usage
 
-After unzipping the download, press on the explorer's address bar and type "python main.py"
+After unzipping the download, press on the explorer's address bar and type "cmd"
+
+After cmd opens, type in "pip install -r requirements.txt"
+
+After it is finished, type in "python main.py"
 
 ## Contributing
 
