@@ -1,6 +1,6 @@
 # Budget Python Wordle
 
-Inspired by the popular game recently bought by NYT, Wordle
+Very similar to the popular game Wordle, just using Python and a simpler version :D 
 
 ## Usage
 
@@ -12,7 +12,7 @@ After it is finished, type in "python main.py"
 
 ## Contributing
 
-Contribution is appreciated.
+Contributions are appreciated.
 
 ## License
 

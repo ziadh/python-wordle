@@ -10,6 +10,8 @@ import os
 
 init()
 
+version = "2.20"
+
 
 def main_menu():
     menu_choices = [
@@ -18,7 +20,6 @@ def main_menu():
         "Credits",
         "Exit",
     ]
-
     choice = inquirer.select(
         message="Welcome to Python-Wordle! Please select an option:",
         choices=menu_choices,
@@ -35,6 +36,8 @@ def main_menu():
         print("Terminating program in 3 seconds")
         sleep(3)
         exit()
+
+    print(f"Version {version}")
 
 
 wins = 0
@@ -57,13 +60,18 @@ def play_game():
                 colored_word += guess[i]
         return colored_word
 
-    with open("words.json", "r") as f:
-        words = json.load(f)
-    word = random.choice(words)
+    with open("guess-words.json", "r") as f:
+        guess_words = json.load(f)
+    word = random.choice(guess_words)
+
+    with open("accepted-words.json", "r") as f:
+        accepted_words = json.load(f)
+
     tries = 6
     while tries > 0:
         guess = input("Enter your guess: ").lower()
-        # ONLY UNCOMMENT THIS FOR DEV REASONSprint(word)
+        # ONLY UNCOMMENT THIS FOR DEV REASONS
+        # print(word)
         if guess == word:
             print("Congrats, you won!")
             wins += 1
@@ -80,6 +88,10 @@ def play_game():
                 main_menu()
         elif len(guess) > 5 or len(guess) < 5:
             print("Invalid length. Please try again.")
+        # write the elif here
+        elif guess not in accepted_words:
+            print(
+                "Word does not exist. Please try again. \n You still have {} tries left.".format(tries))
         else:
             tries -= 1
             print("Incorrect. You have {} tries left.".format(tries))
