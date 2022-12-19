@@ -1,27 +1,59 @@
-
-from InquirerPy import inquirer, prompt
-from InquirerPy.separator import Separator
 import random
 import json
-from colorama import init, Back, Style, Fore
 from time import sleep
-import keyboard
 import os
+import time
+
+
+import keyboard
+from colorama import init, Back, Style, Fore
+from InquirerPy import inquirer, prompt
+from InquirerPy.separator import Separator
+import requests
+import webbrowser
+
+version = "2.30"
+r = requests.get("https://api.github.com/repos/ziadh/python-wordle/releases")
+json_data = r.json()
+newest_version = json_data[0]["tag_name"]
+
+
+def version_checker():
+
+    update_choice = input(
+        "There's a new version available. Would you like to update? y/n \n")
+    if update_choice.lower() == "y" or update_choice.lower() == "" or update_choice.lower() == " ":
+        print("Downloading update... \nPress any of the arrow keys to continue")
+        download_update()
+
+
+def download_update():
+    link = "https://github.com/ziadh/python-wordle/archive/refs/tags/"+newest_version+".zip"
+    webbrowser.open(link)
+
+
+os.system(f"title Wordle Python v{version}")
 
 init()
 
-version = "2.20"
+global total_wins
+global total_losses
 
 
 def main_menu():
+    print(f"Welcome to Python-Wordle!V{version}")
+    if float(newest_version) > float(version):
+        version_checker()
+
     menu_choices = [
         "Play the game",
         "Instructions",
         "Credits",
         "Exit",
     ]
+
     choice = inquirer.select(
-        message="Welcome to Python-Wordle! Please select an option:",
+        message=f"\nPlease select an option:",
         choices=menu_choices,
         default=menu_choices[0],
     ).execute()
@@ -37,14 +69,15 @@ def main_menu():
         sleep(3)
         exit()
 
-    print(f"Version {version}")
-
 
 wins = 0
+losses = 0
 
 
 def play_game():
     global wins
+    global losses
+
     won_game = False
 
     def get_colored_word(word, guess):
@@ -73,10 +106,13 @@ def play_game():
         # ONLY UNCOMMENT THIS FOR DEV REASONS
         # print(word)
         if guess == word:
+            print(word)
             print("Congrats, you won!")
             wins += 1
             won_game = True
 
+            with open("stats.json", "w") as f:
+                json.dump({"wins": wins}, f)
             if wins > 1:
                 print(f"You are on a {wins}-game winning streak!")
                 sleep(1)
@@ -88,24 +124,28 @@ def play_game():
                 main_menu()
         elif len(guess) > 5 or len(guess) < 5:
             print("Invalid length. Please try again.")
-        # write the elif here
         elif guess not in accepted_words:
-            print(
-                "Word does not exist. Please try again. \n You still have {} tries left.".format(tries))
+            print("Word does not exist. Please try again.")
+            sleep(1)
+            print("You still have {} tries left.".format(tries))
         else:
             tries -= 1
             print("Incorrect. You have {} tries left.".format(tries))
             colored_word = get_colored_word(word, guess)
             print("Word: {}".format(colored_word))
     if tries == 0:
+        losses += 1
+        with open("stats.json", "w") as f:
+            json.dump({"wins": wins, "losses": losses}, f)
         print("You lost! The word was "+word+"!")
-        wins = 0
         playagain = input("Would you like to play again? y/n \n")
         if playagain == "y" or playagain == "Y":
             play_game()
         else:
             os.system('cls')
             main_menu()
+    with open("stats.json", "w") as f:
+        json.dump({"wins": wins, "losses": losses}, f)
 
 
 def instructions():
