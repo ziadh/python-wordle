@@ -12,7 +12,7 @@ from InquirerPy.separator import Separator
 import requests
 import webbrowser
 
-version = "2.30"
+version = "2.32"
 r = requests.get("https://api.github.com/repos/ziadh/python-wordle/releases")
 json_data = r.json()
 newest_version = json_data[0]["tag_name"]
@@ -93,11 +93,11 @@ def play_game():
                 colored_word += guess[i]
         return colored_word
 
-    with open("guess-words.json", "r") as f:
+    with open("src/guess-words.json", "r") as f:
         guess_words = json.load(f)
     word = random.choice(guess_words)
 
-    with open("accepted-words.json", "r") as f:
+    with open("src/accepted-words.json", "r") as f:
         accepted_words = json.load(f)
 
     tries = 6
@@ -111,7 +111,7 @@ def play_game():
             wins += 1
             won_game = True
 
-            with open("stats.json", "w") as f:
+            with open("src/stats.json", "w") as f:
                 json.dump({"wins": wins}, f)
             if wins > 1:
                 print(f"You are on a {wins}-game winning streak!")
@@ -135,7 +135,7 @@ def play_game():
             print("Word: {}".format(colored_word))
     if tries == 0:
         losses += 1
-        with open("stats.json", "w") as f:
+        with open("src/stats.json", "w") as f:
             json.dump({"wins": wins, "losses": losses}, f)
         print("You lost! The word was "+word+"!")
         playagain = input("Would you like to play again? y/n \n")
@@ -144,7 +144,7 @@ def play_game():
         else:
             os.system('cls')
             main_menu()
-    with open("stats.json", "w") as f:
+    with open("src/stats.json", "w") as f:
         json.dump({"wins": wins, "losses": losses}, f)
 
 
